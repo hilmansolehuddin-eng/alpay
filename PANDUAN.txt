@@ -1,0 +1,39 @@
+ALPay - Kampung Arab Al-Azhar
+Cara memasang di HP (Android & iPhone)
+=====================================
+
+LANGKAH 1 - Online-kan aplikasi (sekali saja, gratis)
+  Cara termudah: Netlify Drop
+  1. Ekstrak file ALPay-PWA.zip di komputer, sehingga ada folder "ALPay-PWA".
+  2. Buka https://app.netlify.com/drop lalu daftar/masuk (gratis).
+  3. Seret (drag) folder "ALPay-PWA" ke halaman itu.
+  4. Tunggu sebentar. Anda mendapat alamat, misalnya https://nama-acak.netlify.app
+     (nama bisa diganti di Site settings, misalnya alpay-kampungarab.netlify.app).
+
+  Alternatif: Vercel (vercel.com) atau GitHub Pages juga bisa, unggah isi folder yang sama.
+
+LANGKAH 2 - Pasang di HP
+  Android (Chrome):
+    Buka alamat tadi di Chrome. Ketuk tombol "Pasang" di bar hijau atas,
+    atau menu titik tiga > "Instal aplikasi" / "Tambahkan ke layar utama".
+  iPhone (Safari - harus Safari):
+    Buka alamat tadi di Safari. Ketuk tombol Bagikan (kotak dengan panah ke atas)
+    > "Tambah ke Layar Utama" > Tambah.
+
+  Ikon ALPay (logo Kampung Arab Al-Azhar) muncul di layar HP dan terbuka
+  layar penuh seperti aplikasi biasa. Setelah dibuka sekali, tetap bisa
+  dipakai tanpa internet (kecuali tombol kirim WhatsApp).
+
+LANGKAH 3 - Pindahkan data Anda
+  Data tersimpan di masing-masing HP/browser, tidak ikut pindah otomatis.
+  1. Di aplikasi lama (link claude.ai): Pengaturan > "Simpan cadangan (JSON)".
+  2. Kirim file JSON itu ke HP (WA ke diri sendiri, Google Drive, dll).
+  3. Di ALPay yang sudah terpasang: Pengaturan > "Pulihkan dari JSON" > pilih file.
+  Lakukan "Simpan cadangan" secara rutin agar data aman.
+
+Catatan
+  - Data contoh di versi ini memakai nama rekaan "(contoh)". Hapus atau ganti
+    dengan data asli, atau langsung pulihkan dari cadangan JSON.
+  - Alamat web ini bisa dibuka siapa saja yang tahu alamatnya, tetapi data
+    bisyaroh tidak ikut terunggah: data hanya ada di HP yang dipakai.
+    Yang terlihat publik hanya tampilan aplikasi, logo, dan stempel.
