@@ -222,7 +222,7 @@ table.t{border-collapse:collapse;width:100%;font-size:13px}
         <input id="importFile" type="file" accept=".json,application/json" hidden>
         <span id="resetZone"><button class="btn danger" data-act="reset-ask">Hapus semua data tutor</button></span>
       </div>
-      <p class="note">Data tersimpan di browser ini. Simpan cadangan secara rutin.</p><p class="note"><b>Versi aplikasi: v5 · 8 Nov 2026</b> (kolom privat rapi di HP)</p>
+      <p class="note">Data tersimpan di browser ini. Simpan cadangan secara rutin.</p><p class="note"><b>Versi aplikasi: v6 · 9 Nov 2026</b> (kolom masukan di Bisyaroh)</p>
     </div>
   </section>
 </main></div>
@@ -363,6 +363,8 @@ function renderCalc(){
       <input type="number" min="0" step="5000" data-item="${i.id}" data-k="nominal" value="${i.nominal||""}" placeholder="Rp" aria-label="Nominal">
       <button class="xbtn" data-act="del-item" data-id="${i.id}" aria-label="Hapus">×</button></div>`).join("")||`<p class="note">Tidak ada tambahan.</p>`}</div>
     <div class="row"><button class="btn sm" data-act="add-item">+ Tambahan</button><button class="btn sm" data-act="add-pv">+ Privat</button><button class="btn sm danger" data-act="add-pot">+ Potongan</button></div>
+    <p class="lbl">Masukan / evaluasi untuk ${esc(I("orang").toLowerCase())}</p>
+    <label class="field"><span>Catatan bulan ${periodText()} (opsional). Ikut tercetak di slip dan pesan WhatsApp.</span><textarea id="f_cat2" maxlength="400" rows="3" placeholder="Contoh: Kehadiran sangat baik. Perlu peningkatan dalam persiapan materi dan manajemen kelas.">${esc(R(t).catatan||"")}</textarea></label>
     `;
 }
 function slipHTML(t){const c=calc(t),st=S.settings;
@@ -520,6 +522,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("input",e=>{
   const el=e.target,d=el.dataset,t=curT();
   if(el.id==="f_cat"&&t){R(t).catatan=el.value;save();renderSlip();return;}
+  if(el.id==="f_cat2"&&t){R(t).catatan=el.value;save();refresh();return;}
   if(d.t&&t){t[d.t]=d.t==="tarif"?(+el.value||0):el.value;refresh();if(d.t==="nama")$("#calcPanel h2").textContent=el.value||"(tanpa nama)";}
   else if(d.r&&t){R(t)[d.r]=+el.value||0;refresh();}
   else if(d.item&&t){const i=R(t).items.find(x=>x.id===d.item);if(!i)return;i[d.k]=["nominal","jam","perjam"].includes(d.k)?(+el.value||0):el.value;if(i.privat){i.nominal=(+i.jam||0)*(+i.perjam||0);const o=document.getElementById("pv_"+i.id);if(o)o.textContent="= "+num(i.nominal);}if(d.k==="jenis"&&!i.privat){i.minus=el.value.trim().toLowerCase()==="potongan";el.closest(".item").classList.toggle("minus",i.minus);}refresh();}
