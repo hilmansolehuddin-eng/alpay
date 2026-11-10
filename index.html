@@ -146,12 +146,42 @@ table.t{border-collapse:collapse;width:100%;font-size:13px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:9px;font-weight:600;font-size:13px;z-index:50;max-width:calc(100vw - 32px)}
 .confirm{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--neg-soft);color:var(--neg);padding:6px 10px;border-radius:8px;font-weight:600;font-size:12.5px}
 .empty{padding:24px;text-align:center;color:var(--muted)}
+body.locked header,body.locked .wrap{display:none}
+#login{position:fixed;inset:0;z-index:100;background:var(--bg);display:none;overflow:auto;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+body.locked #login{display:block}
+.lcard{width:min(420px,100%);margin:7vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:grid;gap:12px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.lcard img{height:92px;width:auto;margin:0 auto;display:block}
+.lcard h1{font-size:20px;margin:4px 0 0;letter-spacing:-.01em}
+.lcard .sub{margin:0}
+.lcard form{display:grid;gap:12px;text-align:left}
+.lcard .field>span{font-weight:500}
+.lcard .pw{display:flex;gap:8px}
+.lcard .btn{justify-content:center}
+.lcard .btn.primary{padding:12px;font-size:15px}
+.lcard .lnk{background:none;border:0;color:var(--brand);font:500 14px var(--f);text-decoration:underline;cursor:pointer;padding:6px}
+.lcard .err{color:var(--neg);background:var(--neg-soft);border-radius:8px;padding:8px 10px;font-size:13px;text-align:left}
+.lcard .ok{color:var(--brand);font-size:13px}
+.lcard input{padding:11px 12px;font-size:15px}
 </style>
 
+<div id="login" role="dialog" aria-modal="true" aria-label="Masuk ALPay"><div class="lcard">
+  <img id="lgLogo" alt="Logo Kampung Arab Al-Azhar">
+  <h1>ALPay – Kampung Arab Al Azhar</h1>
+  <p class="sub" id="lgSub">Masuk sebagai admin</p>
+  <form id="lgForm" autocomplete="on">
+    <label class="field"><span>Username</span><input id="lgUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+    <label class="field"><span>Sandi</span><div class="pw"><input id="lgPass" name="password" type="password" autocomplete="current-password"><button type="button" class="btn" id="lgShow">Lihat</button></div></label>
+    <label class="field" id="lgRow2" hidden><span>Ulangi sandi</span><input id="lgPass2" type="password" autocomplete="new-password"></label>
+    <div class="err" id="lgErr" role="alert" hidden></div>
+    <button class="btn primary" id="lgBtn" type="submit">Masuk</button>
+  </form>
+  <button class="lnk" id="lgSwitch" type="button" hidden>Belum ada admin? Buat admin pertama</button>
+  <div id="lgForgot"><button class="lnk" type="button" id="lgForgotBtn">Lupa sandi?</button></div>
+</div></div>
 <header>
   <div class="wrap top">
     <div class="brand"><img class="mark" alt="Logo Kampung Arab Al-Azhar"><div><b>ALPay</b><span id="schoolLine">Al-Azhar Payroll System</span></div></div>
-    <div class="period"><select id="pMonth" aria-label="Bulan"></select><input id="pYear" type="number" min="2020" max="2100" style="width:84px" aria-label="Tahun"></div>
+    <div class="period"><select id="pMonth" aria-label="Bulan"></select><input id="pYear" type="number" min="2020" max="2100" style="width:84px" aria-label="Tahun"><button class="btn sm" id="btnOut" type="button">Keluar</button></div>
   </div>
   <div class="wrap"><nav role="tablist">
     <button role="tab" data-tab="hitung" aria-selected="true" id="nav1">Bisyaroh</button>
@@ -215,6 +245,18 @@ table.t{border-collapse:collapse;width:100%;font-size:13px}
       <p class="note">Jenis tambahan muncul sebagai pilihan saat mengisi bisyaroh. Jenis lain tetap bisa diketik langsung.</p>
     </div>
     <div class="card">
+      <h3>Keamanan</h3>
+      <p class="note">Masuk sebagai: <b id="secUser">-</b>. Aplikasi meminta username dan sandi setiap kali dibuka.</p>
+      <details><summary>Ganti username / sandi</summary><div class="in">
+        <label class="field"><span>Sandi sekarang</span><input id="chOld" type="password" autocomplete="current-password"></label>
+        <label class="field"><span>Username baru</span><input id="chUser" autocapitalize="none" spellcheck="false"></label>
+        <label class="field"><span>Sandi baru (kosongkan jika tidak diganti)</span><input id="chNew" type="password" autocomplete="new-password"></label>
+        <label class="field"><span>Ulangi sandi baru</span><input id="chNew2" type="password" autocomplete="new-password"></label>
+        <div class="row"><button class="btn primary" id="chSave" type="button">Simpan</button><span class="note" id="chMsg"></span></div>
+      </div></details>
+      <div class="row"><button class="btn" id="btnOut2" type="button">Keluar sekarang</button></div>
+    </div>
+    <div class="card">
       <h3>Cadangan data</h3>
       <div class="row">
         <button class="btn" data-act="export">Simpan cadangan (JSON)</button>
@@ -222,7 +264,7 @@ table.t{border-collapse:collapse;width:100%;font-size:13px}
         <input id="importFile" type="file" accept=".json,application/json" hidden>
         <span id="resetZone"><button class="btn danger" data-act="reset-ask">Hapus semua data tutor</button></span>
       </div>
-      <p class="note">Data tersimpan di browser ini. Simpan cadangan secara rutin.</p><p class="note"><b>Versi aplikasi: v6 · 9 Nov 2026</b> (kolom masukan di Bisyaroh)</p>
+      <p class="note">Data tersimpan di browser ini. Simpan cadangan secara rutin.</p><p class="note"><b>Versi aplikasi: v8 · 10 Nov 2026</b> (jenis tambahan diketik bebas)</p>
     </div>
   </section>
 </main></div>
@@ -309,8 +351,9 @@ function waText(t){const c=calc(t),g=I("gaji");
     `${rp(c.tarif)} × ${num(c.ngajar)} ${I("satuan")} = ${rp(c.honor)}`,...c.plus.map(i=>`+ ${label(i)} = ${rp(i.nominal)}`),...c.minus.map(i=>`- ${label(i)} = ${rp(i.nominal)}`),
     ``,`*Total ${g.toLowerCase()}: ${rp(c.total)}*`,`(${terbilang(c.total)})`,...((R(t).catatan||"").trim()?[``,`*Catatan:*`,R(t).catatan.trim()]:[]),``,`Jazakumullahu khairan.`,`Mudir ${LEMBAGA.nama}`,LEMBAGA.mudir].join("\n");}
 const pvTxt=i=>`${num(i.jam)} ${I("satuan")} × ${rp(i.perjam)}`;
-const label=i=>i.privat?`${i.jenis} (${pvTxt(i)}${i.ket?" · "+i.ket:""})`:(i.ket?`${i.jenis} (${i.ket})`:i.jenis);
-const shortLbl=i=>i.privat?`${i.jenis} ${num(i.jam)}×${num(i.perjam)}`:i.jenis;
+const jn=i=>(i.jenis||"").trim()||"Lain-lain";
+const label=i=>i.privat?`${jn(i)} (${pvTxt(i)}${i.ket?" · "+i.ket:""})`:(i.ket?`${jn(i)} (${i.ket})`:jn(i));
+const shortLbl=i=>i.privat?`${jn(i)} ${num(i.jam)}×${num(i.perjam)}`:jn(i);
 
 /* ---------- RENDER ---------- */
 const $=s=>document.querySelector(s);
@@ -358,7 +401,7 @@ function renderCalc(){
       <label class="mini pph"><span>Rp per ${esc(I("satuan"))}</span><input type="number" min="0" step="5000" data-item="${i.id}" data-k="perjam" value="${i.perjam||""}" placeholder="Rp"></label>
       <span class="pvres" id="pv_${i.id}">= ${num(i.nominal)}</span>
       <button class="xbtn px" data-act="del-item" data-id="${i.id}" aria-label="Hapus">×</button></div>`:`<div class="item ${i.minus?"minus":""}">
-      <input list="dl_jenis" data-item="${i.id}" data-k="jenis" value="${esc(i.jenis)}" aria-label="Jenis">
+      <input data-item="${i.id}" data-k="jenis" value="${esc(i.jenis)}" placeholder="Nama tambahan" autocomplete="off" aria-label="Jenis">
       <input class="k" data-item="${i.id}" data-k="ket" value="${esc(i.ket)}" placeholder="Keterangan (opsional)" aria-label="Keterangan">
       <input type="number" min="0" step="5000" data-item="${i.id}" data-k="nominal" value="${i.nominal||""}" placeholder="Rp" aria-label="Nominal">
       <button class="xbtn" data-act="del-item" data-id="${i.id}" aria-label="Hapus">×</button></div>`).join("")||`<p class="note">Tidak ada tambahan.</p>`}</div>
@@ -502,7 +545,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.tab)return showTab(b.dataset.tab);
   const a=b.dataset.act,t=curT();
   if(a==="add"){const n={id:uid(),nama:"",jabatan:"",tarif:S.tutor[0]?S.tutor[0].tarif:25000};S.tutor.push(n);sel=n.id;ensureMonth();save();showTab("hitung");renderAll();$("#f_nama").focus();}
-  else if(a==="add-item"){R(t).items.push({id:uid(),jenis:(S.jenis||[])[0]||"Tambahan",ket:"",nominal:0,minus:false});save();renderCalc();const q=document.querySelectorAll('#items [data-k="nominal"]');q[q.length-1].focus();}
+  else if(a==="add-item"){R(t).items.push({id:uid(),jenis:"",ket:"",nominal:0,minus:false});save();renderCalc();const q=document.querySelectorAll('#items [data-k="jenis"]');q[q.length-1].focus();}
   else if(a==="add-pv"){R(t).items.push({id:uid(),jenis:"Privat",ket:"",jam:0,perjam:0,nominal:0,minus:false,privat:true});save();renderCalc();const q=document.querySelectorAll('#items [data-k="jam"]');q[q.length-1].focus();}
   else if(a==="add-pot"){R(t).items.push({id:uid(),jenis:"Potongan",ket:"",nominal:0,minus:true});save();renderCalc();const q=document.querySelectorAll('#items [data-k="nominal"]');q[q.length-1].focus();}
   else if(a==="del-item"){const r=R(t);r.items=r.items.filter(i=>i.id!==b.dataset.id);save();renderCalc();refresh();}
@@ -539,6 +582,86 @@ $("#importFile").addEventListener("change",e=>{const f=e.target.files[0];if(!f)r
 ensureMonth();sel=S.tutor[1]?S.tutor[1].id:(S.tutor[0]||{}).id||null;
 renderAll();
 window.ALPay={buildSlip,buildAllSlips,buildLap,getState:()=>S,calc,pick:id=>{sel=id;renderAll();}};
+})();
+</script>
+<script>
+(function(){
+"use strict";
+const AK="alpay.auth.v1",SK="alpay.sess",$=s=>document.querySelector(s);
+const b64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function hash(pw,salt,it){
+  if(window.crypto&&crypto.subtle){
+    const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveBits"]);
+    return b64(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt,iterations:it},k,256));
+  }
+  let h=5381;const t=pw+b64(salt);for(let i=0;i<20000;i++){for(let j=0;j<t.length;j++)h=((h<<5)+h+t.charCodeAt(j))|0;}return "x"+h;
+}
+const getA=()=>{try{return JSON.parse(localStorage.getItem(AK)||"null");}catch(e){return null;}};
+const setA=a=>{try{localStorage.setItem(AK,JSON.stringify(a));return true;}catch(e){return false;}};
+const inSess=()=>{try{return sessionStorage.getItem(SK)==="1";}catch(e){return false;}};
+const setSess=v=>{try{v?sessionStorage.setItem(SK,"1"):sessionStorage.removeItem(SK);}catch(e){}};
+async function make(user,pw){const salt=crypto.getRandomValues?crypto.getRandomValues(new Uint8Array(16)):Uint8Array.from({length:16},()=>Math.random()*256);const it=150000;return {u:user.trim(),k:user.trim().toLowerCase(),salt:b64(salt),it,h:await hash(pw,salt,it)};}
+async function check(a,user,pw){if(user.trim().toLowerCase()!==a.k)return false;return (await hash(pw,unb64(a.salt),a.it))===a.h;}
+
+let mode="login",fails=0,lockUntil=0;
+const err=m=>{const e=$("#lgErr");e.textContent=m||"";e.hidden=!m;};
+function show(){
+  const a=getA(),locked=!inSess();
+  document.body.classList.toggle("locked",locked);
+  $("#secUser").textContent=a?a.u:"-";
+  if(!locked)return;
+  mode=a?(mode==="reset"?"reset":"login"):"create";
+  const create=mode==="create";
+  $("#lgSub").textContent=create?"Buat admin pertama untuk mengunci aplikasi":"Masuk sebagai admin";
+  $("#lgRow2").hidden=!create;$("#lgBtn").textContent=create?"Buat admin & masuk":"Masuk";
+  $("#lgPass").autocomplete=create?"new-password":"current-password";
+  $("#lgSwitch").hidden=true;$("#lgForgot").hidden=create;
+  $("#lgUser").value=a?a.u:"";err("");
+  if(!$("#lgForgot").querySelector("#lgForgotBtn")){$("#lgForgot").innerHTML='<button class="lnk" type="button" id="lgForgotBtn">Lupa sandi?</button>';}
+  setTimeout(()=>{(a?$("#lgPass"):$("#lgUser")).focus();},50);
+}
+$("#lgLogo").src=($(".mark")||{}).src||"";
+$("#lgShow").onclick=()=>{const p=$("#lgPass"),h=p.type==="password";p.type=h?"text":"password";$("#lgPass2").type=p.type;$("#lgShow").textContent=h?"Sembunyi":"Lihat";};
+$("#lgForm").addEventListener("submit",async e=>{
+  e.preventDefault();err("");
+  const u=$("#lgUser").value.trim(),pw=$("#lgPass").value;
+  const a=getA();
+  if(!a){
+    if(u.length<3)return err("Username minimal 3 karakter.");
+    if(pw.length<6)return err("Sandi minimal 6 karakter.");
+    if(pw!==$("#lgPass2").value)return err("Ulangi sandi tidak sama.");
+    const rec=await make(u,pw);if(!setA(rec))return err("Tidak bisa menyimpan akun di browser ini.");
+    setSess(true);$("#lgPass").value=$("#lgPass2").value="";show();return;
+  }
+  if(Date.now()<lockUntil)return err("Terlalu banyak percobaan. Coba lagi "+Math.ceil((lockUntil-Date.now())/1000)+" detik lagi.");
+  if(await check(a,u,pw)){fails=0;setSess(true);$("#lgPass").value="";show();}
+  else{fails++;if(fails>=5){lockUntil=Date.now()+30000;fails=0;err("Terlalu banyak percobaan. Tunggu 30 detik.");}else err("Username atau sandi salah.");}
+});
+function logout(){setSess(false);mode="login";show();}
+$("#btnOut").onclick=logout;$("#btnOut2").onclick=logout;
+document.addEventListener("click",e=>{
+  if(e.target.id==="lgForgotBtn"){
+    $("#lgForgot").innerHTML='<div class="err">Reset menghapus akun admin <b>dan semua data tutor</b> di HP ini. Pulihkan dari cadangan JSON setelahnya. <div class="row" style="margin-top:8px;justify-content:center"><button class="btn" id="lgResetNo" type="button">Batal</button><button class="btn" id="lgResetYes" type="button" style="color:var(--neg)">Ya, reset</button></div></div>';
+  }else if(e.target.id==="lgResetNo"){$("#lgForgot").innerHTML='<button class="lnk" type="button" id="lgForgotBtn">Lupa sandi?</button>';}
+  else if(e.target.id==="lgResetYes"){
+    try{["alpay.v5","alpay.v4","alpay.v3",AK].forEach(k=>localStorage.removeItem(k));}catch(x){}
+    setSess(false);location.reload();
+  }
+});
+$("#chSave").onclick=async()=>{
+  const m=$("#chMsg"),a=getA();m.textContent="";m.style.color="var(--neg)";
+  if(!a)return;
+  if(!(await check(a,a.u,$("#chOld").value)))return m.textContent="Sandi sekarang salah.";
+  const nu=($("#chUser").value.trim()||a.u),np=$("#chNew").value;
+  if(nu.length<3)return m.textContent="Username minimal 3 karakter.";
+  if(np&&np.length<6)return m.textContent="Sandi baru minimal 6 karakter.";
+  if(np&&np!==$("#chNew2").value)return m.textContent="Ulangi sandi baru tidak sama.";
+  const rec=await make(nu,np||$("#chOld").value);setA(rec);
+  $("#chOld").value=$("#chNew").value=$("#chNew2").value=$("#chUser").value="";
+  m.style.color="var(--brand)";m.textContent="Tersimpan.";$("#secUser").textContent=rec.u;
+};
+show();
 })();
 </script>
 
